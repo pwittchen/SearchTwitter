@@ -54,12 +54,16 @@ Reports from analysis are generated in `app/build/reports/` directory.
 
 Used libraries
 --------------
-- RxJava
-- RxAnadroid
-- Dagger 2
-- ButterKnife
-- Joda Time
-- Picasso
-- Twitter4J
-- Material SearchView
-- JUnit4
+- In application
+  - RxJava
+  - RxAnadroid
+  - Dagger 2
+  - ButterKnife
+  - Joda Time
+  - Picasso
+  - Twitter4J
+  - Material SearchView
+- In tests
+  - JUnit4
+  - Google Truth
+  - Mockito

@@ -1,2 +1,60 @@
-# SearchTwitter
+SearchTwitter
+=============
 Android app, which allows to search tweets
+
+Overview
+--------
+
+User can search tweets with a given keyword as he or she types or by pressing search icon. Application has infinite scroll. Implementation of the dynamic search is quite simple thanks to RxJava and Reactive Programming principles.
+
+Building the project
+--------------------
+
+We can build project with Gradle Wrapper and the following command:
+
+```
+./gradlew build
+```
+
+Tests
+-----
+
+Tets are located in `app/src/androidTest/java` and can be executed on device or emulator with the following command:
+
+```
+./gradlew connectedCheck
+```
+
+Reports from tests are located in `app/build/reports/androidTests/` directory.
+
+Running Static Code Analysis
+----------------------------
+
+Project uses the following tools for static code analysis configured in `config/quality.gradle`
+file:
+- Checkstyle
+- PMD
+- FindBugs
+- Android Lint
+
+Reference to this file is added in app/build.gradle file.
+
+Static Code analysis can be executed with the following command:
+
+```
+./gradlew check
+```
+
+Reports from analysis are generated in `app/build/reports/` directory.
+
+Used libraries
+--------------
+- RxJava
+- RxAnadroid
+- Dagger 2
+- ButterKnife
+- Joda Time
+- Picasso
+- Twitter4J
+- Material SearchView
+- JUnit4

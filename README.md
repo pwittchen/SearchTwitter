@@ -1,6 +1,6 @@
 SearchTwitter
 =============
-Android app, which allows to search tweets
+Android app, which allows to search tweets as user types
 
 Overview
 --------

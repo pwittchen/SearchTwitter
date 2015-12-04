@@ -32,8 +32,8 @@ Tets are located in `app/src/androidTest/java` and can be executed on device or 
 
 Reports from tests are located in `app/build/reports/androidTests/` directory.
 
-Running Static Code Analysis
-----------------------------
+Static Code Analysis
+--------------------
 
 Project uses the following tools for static code analysis configured in `config/quality.gradle`
 file:

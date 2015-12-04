@@ -42,7 +42,7 @@ file:
 - FindBugs
 - Android Lint
 
-Reference to this file is added in app/build.gradle file.
+Reference to this file is added in `app/build.gradle` file.
 
 Static Code analysis can be executed with the following command:
 

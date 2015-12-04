@@ -7,6 +7,11 @@ Overview
 
 User can search tweets with a given keyword as he or she types or by pressing search icon. Application has infinite scroll. Implementation of the dynamic search is quite simple thanks to RxJava and Reactive Programming principles.
 
+Configuration of Twitter API keys and tokens
+--------------------------------------------
+
+Go to https://apps.twitter.com/ website, register your account and Twitter app. Next, generate your keys and tokens. When you have them, go to the `app/src/main/java/com/pwittchen/search/twitter/twitter/TwitterOAuthConfig.java` file and put your tokens there. After that, you can build and run the app.
+
 Building the project
 --------------------
 

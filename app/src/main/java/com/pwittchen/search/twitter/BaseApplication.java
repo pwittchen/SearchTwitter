@@ -3,6 +3,7 @@ package com.pwittchen.search.twitter;
 import android.app.Application;
 import com.pwittchen.search.twitter.di.ApplicationComponent;
 import com.pwittchen.search.twitter.di.DaggerApplicationComponent;
+import com.pwittchen.search.twitter.di.module.NetworkModule;
 import com.pwittchen.search.twitter.di.module.TwitterModule;
 
 public final class BaseApplication extends Application {
@@ -14,7 +15,10 @@ public final class BaseApplication extends Application {
   }
 
   private void buildApplicationComponent() {
-    component = DaggerApplicationComponent.builder().twitterModule(new TwitterModule()).build();
+    component = DaggerApplicationComponent.builder()
+        .twitterModule(new TwitterModule())
+        .networkModule(new NetworkModule())
+        .build();
   }
 
   public ApplicationComponent getComponent() {

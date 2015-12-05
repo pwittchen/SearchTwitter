@@ -1,4 +1,4 @@
-SearchTwitter
+SearchTwitter [![Build Status](https://travis-ci.org/pwittchen/SearchTwitter.svg)](https://travis-ci.org/pwittchen/SearchTwitter)
 =============
 Android app, which allows to search tweets as user types
 

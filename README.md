@@ -5,7 +5,7 @@ Android app, which allows to search tweets as user types
 Overview
 --------
 
-User can search tweets with a given keyword as he or she types or by pressing search icon. Application has infinite scroll. Implementation of the dynamic search is quite simple thanks to RxJava and Reactive Programming principles.
+User can search tweets with a given keyword as he or she types or by touching search icon. Moreover, application has so called infinite scroll for tweets. Implementation of the dynamic search is quite simple thanks to RxJava and Reactive Programming principles.
 
 Configuration of Twitter API keys and tokens
 --------------------------------------------

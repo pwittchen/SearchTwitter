@@ -67,7 +67,7 @@ Used libraries
   - Joda Time
   - Picasso
   - Twitter4J
-  - Material SearchView
+  - MaterialSearchView
 - In tests
   - JUnit4
   - Google Truth

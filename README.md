@@ -2,6 +2,17 @@ SearchTwitter [![Build Status](https://travis-ci.org/pwittchen/SearchTwitter.svg
 =============
 Android app, which allows to search tweets as user types
 
+Contents
+--------
+
+- [Overview](#overview)
+- [Configuration of Twitter API keys and tokens](#configuration-of-twitter-api-keys-and-tokens)
+- [Twitter API rate limits](#twitter-api-rate-limits)
+- [Building the project](#building-the-project)
+- [Tests](#tests)
+- [Static Code Analysis](#static-code-analysis)
+- [Used libraries](#used-libraries)
+
 Overview
 --------
 

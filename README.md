@@ -11,6 +11,7 @@ Contents
 - [Building the project](#building-the-project)
 - [Tests](#tests)
 - [Static Code Analysis](#static-code-analysis)
+- [Code style](#code-style)
 - [Used libraries](#used-libraries)
 
 Overview
@@ -67,6 +68,11 @@ Static Code analysis can be executed with the following command:
 ```
 
 Reports from analysis are generated in `app/build/reports/` directory.
+
+Code style
+----------
+
+Code style used in the project is called `SquareAndroid` from Java Code Styles repository by Square available at: https://github.com/square/java-code-styles.
 
 Used libraries
 --------------

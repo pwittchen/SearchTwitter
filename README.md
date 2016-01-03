@@ -6,6 +6,7 @@ Contents
 --------
 
 - [Overview](#overview)
+- [Screenshot](#screenshot)
 - [Configuration of Twitter API keys and tokens](#configuration-of-twitter-api-keys-and-tokens)
 - [Twitter API rate limits](#twitter-api-rate-limits)
 - [Building the project](#building-the-project)
@@ -18,6 +19,11 @@ Overview
 --------
 
 User can search tweets with a given keyword as he or she types or by touching search icon. Moreover, application has so called infinite scroll for tweets. Implementation of the dynamic search is quite simple thanks to RxJava and Reactive Programming principles.
+
+Screenshot
+----------
+
+![Screenshot](https://raw.githubusercontent.com/pwittchen/SearchTwitter/master/images/screenshot.png)
 
 Configuration of Twitter API keys and tokens
 --------------------------------------------

@@ -16,7 +16,24 @@ android {
   }
 
   buildTypes {
+    debug {
+      buildConfigField("String", "TWITTER_CONSUMER_KEY", "\"" + TWITTER_CONSUMER_KEY + "\"")
+      buildConfigField("String", "TWITTER_CONSUMER_SECRET", "\"" + TWITTER_CONSUMER_SECRET + "\"")
+      buildConfigField("String", "TWITTER_ACCESS_TOKEN", "\"" + TWITTER_ACCESS_TOKEN + "\"")
+      buildConfigField("String", "TWITTER_ACCESS_TOKEN_SECRET",
+          "\"" + TWITTER_ACCESS_TOKEN_SECRET + "\"")
+
+      minifyEnabled false
+      applicationIdSuffix ".debug"
+    }
+
     release {
+      buildConfigField("String", "TWITTER_CONSUMER_KEY", "\"" + TWITTER_CONSUMER_KEY + "\"")
+      buildConfigField("String", "TWITTER_CONSUMER_SECRET", "\"" + TWITTER_CONSUMER_SECRET + "\"")
+      buildConfigField("String", "TWITTER_ACCESS_TOKEN", "\"" + TWITTER_ACCESS_TOKEN + "\"")
+      buildConfigField("String", "TWITTER_ACCESS_TOKEN_SECRET",
+          "\"" + TWITTER_ACCESS_TOKEN_SECRET + "\"")
+
       minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }

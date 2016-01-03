@@ -1,6 +1,7 @@
 package com.pwittchen.search.twitter.twitter;
 
 import android.support.v7.widget.LinearLayoutManager;
+import com.pwittchen.search.twitter.BuildConfig;
 import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
@@ -27,10 +28,10 @@ public final class TwitterApiProvider implements TwitterApi {
   private Configuration createConfiguration() {
     ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
     configurationBuilder.setDebugEnabled(true)
-        .setOAuthConsumerKey(TwitterOAuthConfig.CONSUMER_KEY)
-        .setOAuthConsumerSecret(TwitterOAuthConfig.CONSUMER_SECRET)
-        .setOAuthAccessToken(TwitterOAuthConfig.ACCESS_TOKEN)
-        .setOAuthAccessTokenSecret(TwitterOAuthConfig.ACCESS_TOKEN_SECRET);
+        .setOAuthConsumerKey(BuildConfig.TWITTER_CONSUMER_KEY)
+        .setOAuthConsumerSecret(BuildConfig.TWITTER_CONSUMER_SECRET)
+        .setOAuthAccessToken(BuildConfig.TWITTER_ACCESS_TOKEN)
+        .setOAuthAccessTokenSecret(BuildConfig.TWITTER_ACCESS_TOKEN_SECRET);
 
     return configurationBuilder.build();
   }

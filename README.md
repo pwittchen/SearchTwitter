@@ -22,7 +22,20 @@ User can search tweets with a given keyword as he or she types or by touching se
 Configuration of Twitter API keys and tokens
 --------------------------------------------
 
-Go to https://apps.twitter.com/ website, register your account and Twitter app. Next, generate your keys and tokens. When you have them, go to the `app/src/main/java/com/pwittchen/search/twitter/twitter/TwitterOAuthConfig.java` file and put your generated tokens and keys there. After that, you can build and run the app.
+Go to https://apps.twitter.com/ website, register your account and Twitter app. Next, generate your keys and tokens.
+When you have them, go to `gradle.properties` file in the repository
+and add the following contents to this file:
+
+```
+TWITTER_CONSUMER_KEY=your-consumer-key
+TWITTER_CONSUMER_SECRET=your-consumer-secret
+TWITTER_ACCESS_TOKEN=your-access-token
+TWITTER_ACCESS_TOKEN_SECRET=your-access-token-secret
+```
+
+and set your keys and tokens to appropriate variables.
+
+After that, you can build and run the app.
 
 Twitter API rate limits
 -----------------------

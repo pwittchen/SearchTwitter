@@ -45,7 +45,7 @@
       />
 
   <android.support.v7.widget.RecyclerView
-      android:id="@+id/recycle_view_tweets"
+      android:id="@+id/recycler_view_tweets"
       android:layout_below="@+id/toolbar_container"
       android:layout_above="@+id/tv_loading_more_tweets"
       android:layout_width="match_parent"

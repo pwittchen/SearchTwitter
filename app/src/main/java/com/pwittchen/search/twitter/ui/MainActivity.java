@@ -36,13 +36,13 @@ import twitter4j.TwitterException;
 public final class MainActivity extends AppCompatActivity {
   private static final String EMPTY_STRING = "";
   private String lastKeyword = EMPTY_STRING;
-  private LinearLayoutManager recycleViewLinearLayoutManager;
+  private LinearLayoutManager recyclerViewLinearLayoutManager;
   private Subscription delayedSearchSubscription;
   private Subscription searchTweetsSubscription;
   private Subscription loadMoreTweetsSubscription;
   @Inject protected TwitterApi twitterApi;
   @Inject protected NetworkApi networkApi;
-  @InjectView(R.id.recycle_view_tweets) public RecyclerView recyclerViewTweets;
+  @InjectView(R.id.recycler_view_tweets) public RecyclerView recyclerViewTweets;
   @InjectView(R.id.toolbar) public Toolbar toolbar;
   @InjectView(R.id.search_view) public MaterialSearchView searchView;
   @InjectView(R.id.message_container) public LinearLayout messageContainer;
@@ -54,7 +54,7 @@ public final class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     initInjections();
-    initRecycleView();
+    initRecyclerView();
     setSupportActionBar(toolbar);
     initSearchView();
     initMessageContainer();
@@ -72,11 +72,11 @@ public final class MainActivity extends AppCompatActivity {
     ((BaseApplication) getApplication()).getComponent().inject(this);
   }
 
-  private void initRecycleView() {
+  private void initRecyclerView() {
     recyclerViewTweets.setHasFixedSize(true);
     recyclerViewTweets.setAdapter(new TweetsAdapter(this, new LinkedList<Status>()));
-    recycleViewLinearLayoutManager = new LinearLayoutManager(this);
-    recyclerViewTweets.setLayoutManager(recycleViewLinearLayoutManager);
+    recyclerViewLinearLayoutManager = new LinearLayoutManager(this);
+    recyclerViewTweets.setLayoutManager(recyclerViewLinearLayoutManager);
     setInfiniteScrollListener();
   }
 
@@ -85,7 +85,7 @@ public final class MainActivity extends AppCompatActivity {
       @Override public void onScrolled(final RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
         int maxTweetsPerRequest = twitterApi.getMaxTweetsPerRequest();
-        if (twitterApi.canLoadMoreTweets(recycleViewLinearLayoutManager, maxTweetsPerRequest)) {
+        if (twitterApi.canLoadMoreTweets(recyclerViewLinearLayoutManager, maxTweetsPerRequest)) {
           loadMoreTweets();
         }
       }
@@ -134,7 +134,7 @@ public final class MainActivity extends AppCompatActivity {
     tweets.addAll(oldTweets);
     tweets.addAll(newTweets);
     TweetsAdapter adapter = new TweetsAdapter(MainActivity.this, tweets);
-    int lastPosition = recycleViewLinearLayoutManager.findFirstVisibleItemPosition();
+    int lastPosition = recyclerViewLinearLayoutManager.findFirstVisibleItemPosition();
     recyclerViewTweets.setAdapter(adapter);
     recyclerViewTweets.invalidate();
     recyclerViewTweets.scrollToPosition(lastPosition);

@@ -33,14 +33,27 @@
 
   </FrameLayout>
 
+  <TextView
+      android:id="@+id/tv_loading_more_tweets"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/loading_more_tweets"
+      android:layout_alignParentBottom="true"
+      android:padding="@dimen/loading_more_tweets_text_padding"
+      android:gravity="center_horizontal"
+      android:visibility="gone"
+      />
+
   <android.support.v7.widget.RecyclerView
-      android:layout_below="@+id/toolbar_container"
       android:id="@+id/recycle_view_tweets"
+      android:layout_below="@+id/toolbar_container"
+      android:layout_above="@+id/tv_loading_more_tweets"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:scrollbars="vertical"
       android:visibility="visible"
       />
+
 
   <LinearLayout
       android:id="@+id/message_container"

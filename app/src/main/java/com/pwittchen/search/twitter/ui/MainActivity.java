@@ -48,6 +48,7 @@ public final class MainActivity extends AppCompatActivity {
   @InjectView(R.id.message_container) public LinearLayout messageContainer;
   @InjectView(R.id.iv_message_container_image) public ImageView messageImage;
   @InjectView(R.id.tv_message_container_text) public TextView messageText;
+  @InjectView(R.id.tv_loading_more_tweets) public TextView loadingMoreTweets;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -103,7 +104,7 @@ public final class MainActivity extends AppCompatActivity {
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Subscriber<List<Status>>() {
           @Override public void onStart() {
-            showSnackBar(getString(R.string.loading_more_tweets));
+            loadingMoreTweets.setVisibility(View.VISIBLE);
           }
 
           @Override public void onCompleted() {
@@ -116,10 +117,12 @@ public final class MainActivity extends AppCompatActivity {
             } else {
               showSnackBar(getString(R.string.cannot_load_more_tweets));
             }
+            loadingMoreTweets.setVisibility(View.GONE);
           }
 
           @Override public void onNext(List<Status> newTweets) {
             handleLoadMoreTweets(newTweets, (TweetsAdapter) recyclerViewTweets.getAdapter());
+            loadingMoreTweets.setVisibility(View.GONE);
             unsubscribe();
           }
         });

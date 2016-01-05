@@ -8,6 +8,7 @@ Contents
 - [Overview](#overview)
 - [Screenshot](#screenshot)
 - [Configuration of Twitter API keys and tokens](#configuration-of-twitter-api-keys-and-tokens)
+  - [Working with secrets in Git Repository](#working-with-secrets-in-git-repository)
 - [Twitter API rate limits](#twitter-api-rate-limits)
 - [Building the project](#building-the-project)
 - [Tests](#tests)
@@ -42,6 +43,31 @@ TWITTER_ACCESS_TOKEN_SECRET=your-access-token-secret
 and set your keys and tokens to appropriate variables.
 
 After that, you can build and run the app.
+
+#### Working with secrets in Git Repository
+
+We shouldn't keep tokens and API keys in the Git repository. In order to work efficiently with Git, we can add `gradle.properties` file to `.gitignore` file in the repository or add the following aliases to our `.gitconfig` file:
+
+```
+ignore-local = update-index --assume-unchanged
+unignore-local = update-index --no-assume-unchanged
+ignored-local = !git ls-files -v | grep "^[[:lower:]]"
+```
+
+Then, we can execute:
+```
+$ git ignore-local gradle.properties
+```
+After that, we can add our keys and tokens to this file and our secrets won't be commited or pushed.
+
+To undo this operation, we can simply call:
+```
+$ git unignore-local gradle.properties
+```
+To list all files ingored locally in the Git repository, we can call:
+```
+$ git ignored-local
+```
 
 Twitter API rate limits
 -----------------------

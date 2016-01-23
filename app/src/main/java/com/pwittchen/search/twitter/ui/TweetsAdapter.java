@@ -21,26 +21,26 @@ public final class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.View
   private final Context context;
   private final List<Status> tweets;
 
-  public TweetsAdapter(Context context, List<Status> tweets) {
+  public TweetsAdapter(final Context context, final List<Status> tweets) {
     this.context = context;
     this.tweets = tweets;
   }
 
-  @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    Context context = parent.getContext();
-    View view = LayoutInflater.from(context).inflate(R.layout.item_tweet, parent, false);
-    ViewHolder viewHolder = new ViewHolder(view);
+  @Override public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
+    final Context context = parent.getContext();
+    final View view = LayoutInflater.from(context).inflate(R.layout.item_tweet, parent, false);
+    final ViewHolder viewHolder = new ViewHolder(view);
     return viewHolder;
   }
 
-  @Override public void onBindViewHolder(ViewHolder holder, int position) {
-    Status tweet = tweets.get(position);
+  @Override public void onBindViewHolder(final ViewHolder holder, final int position) {
+    final Status tweet = tweets.get(position);
     Picasso.with(context).load(tweet.getUser().getProfileImageURL()).into(holder.ivAvatar);
     holder.tvName.setText(tweet.getUser().getName());
-    String formattedLogin = String.format(LOGIN_FORMAT, tweet.getUser().getScreenName());
+    final String formattedLogin = String.format(LOGIN_FORMAT, tweet.getUser().getScreenName());
     holder.tvLogin.setText(formattedLogin);
-    DateTime createdAt = new DateTime(tweet.getCreatedAt());
-    DateTimeFormatter formatter = DateTimeFormat.forPattern(DATE_TIME_PATTERN);
+    final DateTime createdAt = new DateTime(tweet.getCreatedAt());
+    final DateTimeFormatter formatter = DateTimeFormat.forPattern(DATE_TIME_PATTERN);
     holder.tvDate.setText(formatter.print(createdAt));
     holder.tvMessage.setText(tweet.getText());
   }
@@ -50,7 +50,7 @@ public final class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.View
   }
 
   public long getLastTweetId() {
-    Status tweet = tweets.get(getItemCount() - 1);
+    final Status tweet = tweets.get(getItemCount() - 1);
     return tweet.getId();
   }
 
@@ -65,7 +65,7 @@ public final class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.View
     protected TextView tvDate;
     protected TextView tvMessage;
 
-    public ViewHolder(View itemView) {
+    public ViewHolder(final View itemView) {
       super(itemView);
       ivAvatar = (ImageView) itemView.findViewById(R.id.iv_avatar);
       tvName = (TextView) itemView.findViewById(R.id.tv_name);

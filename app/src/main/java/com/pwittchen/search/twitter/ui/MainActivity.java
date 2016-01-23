@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -36,7 +37,7 @@ import twitter4j.TwitterException;
 public final class MainActivity extends AppCompatActivity {
   private static final String EMPTY_STRING = "";
   private String lastKeyword = EMPTY_STRING;
-  private LinearLayoutManager recyclerViewLinearLayoutManager;
+  private LinearLayoutManager recyclerViewLayoutManager;
   private Subscription delayedSearchSubscription;
   private Subscription searchTweetsSubscription;
   private Subscription loadMoreTweetsSubscription;
@@ -45,12 +46,12 @@ public final class MainActivity extends AppCompatActivity {
   @InjectView(R.id.recycler_view_tweets) public RecyclerView recyclerViewTweets;
   @InjectView(R.id.toolbar) public Toolbar toolbar;
   @InjectView(R.id.search_view) public MaterialSearchView searchView;
-  @InjectView(R.id.message_container) public LinearLayout messageContainer;
-  @InjectView(R.id.iv_message_container_image) public ImageView messageImage;
-  @InjectView(R.id.tv_message_container_text) public TextView messageText;
-  @InjectView(R.id.tv_loading_more_tweets) public TextView loadingMoreTweets;
+  @InjectView(R.id.message_container) public LinearLayout messageContainerLayout;
+  @InjectView(R.id.iv_message_container_image) public ImageView imageViewMessage;
+  @InjectView(R.id.tv_message_container_text) public TextView textViewMessage;
+  @InjectView(R.id.pb_loading_more_tweets) public ProgressBar progressLoadingMoreTweets;
 
-  @Override protected void onCreate(Bundle savedInstanceState) {
+  @Override protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     initInjections();
@@ -60,9 +61,9 @@ public final class MainActivity extends AppCompatActivity {
     initMessageContainer();
   }
 
-  @Override public boolean onCreateOptionsMenu(Menu menu) {
+  @Override public boolean onCreateOptionsMenu(final Menu menu) {
     getMenuInflater().inflate(R.menu.menu_main, menu);
-    MenuItem item = menu.findItem(R.id.action_search);
+    final MenuItem item = menu.findItem(R.id.action_search);
     searchView.setMenuItem(item);
     return true;
   }
@@ -75,17 +76,18 @@ public final class MainActivity extends AppCompatActivity {
   private void initRecyclerView() {
     recyclerViewTweets.setHasFixedSize(true);
     recyclerViewTweets.setAdapter(new TweetsAdapter(this, new LinkedList<Status>()));
-    recyclerViewLinearLayoutManager = new LinearLayoutManager(this);
-    recyclerViewTweets.setLayoutManager(recyclerViewLinearLayoutManager);
+    recyclerViewLayoutManager = new LinearLayoutManager(this);
+    recyclerViewTweets.setLayoutManager(recyclerViewLayoutManager);
     setInfiniteScrollListener();
   }
 
   @SuppressWarnings("deprecation") private void setInfiniteScrollListener() {
     recyclerViewTweets.setOnScrollListener(new RecyclerView.OnScrollListener() {
-      @Override public void onScrolled(final RecyclerView recyclerView, int dx, int dy) {
+      @Override
+      public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
         super.onScrolled(recyclerView, dx, dy);
-        int maxTweetsPerRequest = twitterApi.getMaxTweetsPerRequest();
-        if (twitterApi.canLoadMoreTweets(recyclerViewLinearLayoutManager, maxTweetsPerRequest)) {
+        final int maxTweetsPerRequest = twitterApi.getMaxTweetsPerRequest();
+        if (twitterApi.canLoadMoreTweets(recyclerViewLayoutManager, maxTweetsPerRequest)) {
           loadMoreTweets();
         }
       }
@@ -97,14 +99,14 @@ public final class MainActivity extends AppCompatActivity {
       return;
     }
 
-    long lastTweetId = ((TweetsAdapter) recyclerViewTweets.getAdapter()).getLastTweetId();
+    final long lastTweetId = ((TweetsAdapter) recyclerViewTweets.getAdapter()).getLastTweetId();
 
     loadMoreTweetsSubscription = twitterApi.searchTweets(lastKeyword, lastTweetId)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Subscriber<List<Status>>() {
           @Override public void onStart() {
-            loadingMoreTweets.setVisibility(View.VISIBLE);
+            progressLoadingMoreTweets.setVisibility(View.VISIBLE);
           }
 
           @Override public void onCompleted() {
@@ -117,25 +119,25 @@ public final class MainActivity extends AppCompatActivity {
             } else {
               showSnackBar(getString(R.string.cannot_load_more_tweets));
             }
-            loadingMoreTweets.setVisibility(View.GONE);
+            progressLoadingMoreTweets.setVisibility(View.GONE);
           }
 
           @Override public void onNext(List<Status> newTweets) {
             handleLoadMoreTweets(newTweets, (TweetsAdapter) recyclerViewTweets.getAdapter());
-            loadingMoreTweets.setVisibility(View.GONE);
+            progressLoadingMoreTweets.setVisibility(View.GONE);
             unsubscribe();
           }
         });
   }
 
-  private void handleLoadMoreTweets(List<Status> newTweets, TweetsAdapter tweetsAdapter) {
-    List<Status> oldTweets = tweetsAdapter.getTweets();
-    List<Status> tweets = new LinkedList<>();
+  private void handleLoadMoreTweets(final List<Status> newTweets, final TweetsAdapter adapter) {
+    final List<Status> oldTweets = adapter.getTweets();
+    final List<Status> tweets = new LinkedList<>();
     tweets.addAll(oldTweets);
     tweets.addAll(newTweets);
-    TweetsAdapter adapter = new TweetsAdapter(MainActivity.this, tweets);
-    int lastPosition = recyclerViewLinearLayoutManager.findFirstVisibleItemPosition();
-    recyclerViewTweets.setAdapter(adapter);
+    final TweetsAdapter newAdapter = new TweetsAdapter(MainActivity.this, tweets);
+    final int lastPosition = recyclerViewLayoutManager.findFirstVisibleItemPosition();
+    recyclerViewTweets.setAdapter(newAdapter);
     recyclerViewTweets.invalidate();
     recyclerViewTweets.scrollToPosition(lastPosition);
   }
@@ -165,7 +167,7 @@ public final class MainActivity extends AppCompatActivity {
   }
 
   private void searchTweetsWithDelay(final String keyword) {
-    unsubscribe(delayedSearchSubscription);
+    safelyUnsubscribe(delayedSearchSubscription);
 
     if (!twitterApi.canSearchTweets(keyword)) {
       return;
@@ -184,7 +186,8 @@ public final class MainActivity extends AppCompatActivity {
   }
 
   private void searchTweets(final String keyword) {
-    unsubscribe(delayedSearchSubscription, loadMoreTweetsSubscription, searchTweetsSubscription);
+    safelyUnsubscribe(delayedSearchSubscription, loadMoreTweetsSubscription,
+        searchTweetsSubscription);
     lastKeyword = keyword;
 
     if (!networkApi.isConnectedToInternet(this)) {
@@ -204,8 +207,8 @@ public final class MainActivity extends AppCompatActivity {
             // we don't have to implement this method
           }
 
-          @Override public void onError(Throwable e) {
-            String message = getErrorMessage((TwitterException) e);
+          @Override public void onError(final Throwable e) {
+            final String message = getErrorMessage((TwitterException) e);
             showSnackBar(message);
             showErrorMessageContainer(message, R.drawable.no_tweets);
           }
@@ -216,55 +219,54 @@ public final class MainActivity extends AppCompatActivity {
         });
   }
 
-  @NonNull private String getErrorMessage(TwitterException e) {
-    String message = getString(R.string.error_during_search);
+  @NonNull private String getErrorMessage(final TwitterException e) {
     if (e.getErrorCode() == twitterApi.getApiRateLimitExceededErrorCode()) {
-      message = getString(R.string.api_rate_limit_exceeded);
+      return getString(R.string.api_rate_limit_exceeded);
     }
-    return message;
+    return getString(R.string.error_during_search);
   }
 
   private void handleSearchResults(final List<Status> tweets, final String keyword) {
     if (tweets.isEmpty()) {
-      String message = String.format(getString(R.string.no_tweets_formatted), keyword);
+      final String message = String.format(getString(R.string.no_tweets_formatted), keyword);
       showSnackBar(message);
       showErrorMessageContainer(message, R.drawable.no_tweets);
       return;
     }
 
-    TweetsAdapter adapter = new TweetsAdapter(MainActivity.this, tweets);
+    final TweetsAdapter adapter = new TweetsAdapter(MainActivity.this, tweets);
     recyclerViewTweets.setAdapter(adapter);
     recyclerViewTweets.invalidate();
     recyclerViewTweets.setVisibility(View.VISIBLE);
-    messageContainer.setVisibility(View.GONE);
-    String message = String.format(getString(R.string.searched_formatted), keyword);
+    messageContainerLayout.setVisibility(View.GONE);
+    final String message = String.format(getString(R.string.searched_formatted), keyword);
     showSnackBar(message);
   }
 
-  private void showSnackBar(String message) {
-    View containerId = findViewById(R.id.container);
+  private void showSnackBar(final String message) {
+    final View containerId = findViewById(R.id.container);
     Snackbar.make(containerId, message, Snackbar.LENGTH_LONG).show();
   }
 
   @Override protected void onPause() {
     super.onPause();
-    unsubscribe(delayedSearchSubscription, searchTweetsSubscription, loadMoreTweetsSubscription);
+    safelyUnsubscribe(delayedSearchSubscription, searchTweetsSubscription,
+        loadMoreTweetsSubscription);
   }
 
-  private void unsubscribe(Subscription... subscriptions) {
+  private void safelyUnsubscribe(final Subscription... subscriptions) {
     for (Subscription subscription : subscriptions) {
       if (subscription != null && !subscription.isUnsubscribed()) {
         subscription.unsubscribe();
-        subscription = null;
       }
     }
   }
 
-  private void showErrorMessageContainer(String message, int imageResourceId) {
+  private void showErrorMessageContainer(final String message, final int imageResourceId) {
     recyclerViewTweets.setVisibility(View.GONE);
-    messageContainer.setVisibility(View.VISIBLE);
-    messageImage.setImageResource(imageResourceId);
-    messageText.setText(message);
+    messageContainerLayout.setVisibility(View.VISIBLE);
+    imageViewMessage.setImageResource(imageResourceId);
+    textViewMessage.setText(message);
   }
 
   @Override public void onBackPressed() {

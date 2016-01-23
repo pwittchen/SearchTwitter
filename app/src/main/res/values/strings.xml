@@ -7,7 +7,6 @@
       formatted="false">No tweets for %s</string>
   <string name="no_tweets">No tweets. Search something!</string>
   <string name="no_internet_connection">No internet connection</string>
-  <string name="loading_more_tweets">Loading more tweets...</string>
   <string name="cannot_load_more_tweets">Cannot load more tweets</string>
   <string name="api_rate_limit_exceeded">API rate limit exceeded</string>
 </resources>

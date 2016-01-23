@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
     android:fitsSystemWindows="true"
+    tools:context=".MainActivity"
     >
 
   <FrameLayout
       android:id="@+id/toolbar_container"
-      android:layout_height="wrap_content"
       android:layout_width="match_parent"
+      android:layout_height="wrap_content"
       android:theme="@style/AppTheme.AppBarOverlay"
       >
 
@@ -33,35 +33,33 @@
 
   </FrameLayout>
 
-  <TextView
-      android:id="@+id/tv_loading_more_tweets"
+  <ProgressBar
+      android:id="@+id/pb_loading_more_tweets"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/loading_more_tweets"
       android:layout_alignParentBottom="true"
-      android:padding="@dimen/loading_more_tweets_text_padding"
       android:gravity="center_horizontal"
+      android:padding="@dimen/loading_more_tweets_text_padding"
       android:visibility="gone"
       />
 
   <android.support.v7.widget.RecyclerView
       android:id="@+id/recycler_view_tweets"
-      android:layout_below="@+id/toolbar_container"
-      android:layout_above="@+id/tv_loading_more_tweets"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:layout_above="@+id/pb_loading_more_tweets"
+      android:layout_below="@+id/toolbar_container"
       android:scrollbars="vertical"
       android:visibility="visible"
       />
-
 
   <LinearLayout
       android:id="@+id/message_container"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_below="@+id/toolbar_container"
-      android:orientation="vertical"
       android:gravity="center"
+      android:orientation="vertical"
       android:visibility="gone"
       >
     <ImageView

@@ -17,16 +17,16 @@ import twitter4j.conf.ConfigurationBuilder;
 public final class TwitterApiProvider implements TwitterApi {
   private static final int MAX_TWEETS_PER_REQUEST = 100;
   private static final int API_RATE_LIMIT_EXCEEDED_ERROR_CODE = 88;
-  private Twitter twitterInstance;
+  private final Twitter twitterInstance;
 
   public TwitterApiProvider() {
-    Configuration configuration = createConfiguration();
-    TwitterFactory twitterFactory = new TwitterFactory(configuration);
+    final Configuration configuration = createConfiguration();
+    final TwitterFactory twitterFactory = new TwitterFactory(configuration);
     twitterInstance = twitterFactory.getInstance();
   }
 
   private Configuration createConfiguration() {
-    ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+    final ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
     configurationBuilder.setDebugEnabled(true)
         .setOAuthConsumerKey(BuildConfig.TWITTER_CONSUMER_KEY)
         .setOAuthConsumerSecret(BuildConfig.TWITTER_CONSUMER_SECRET)
@@ -40,8 +40,8 @@ public final class TwitterApiProvider implements TwitterApi {
     return Observable.create(new Observable.OnSubscribe<List<Status>>() {
       @Override public void call(Subscriber<? super List<Status>> subscriber) {
         try {
-          Query query = new Query(keyword).count(MAX_TWEETS_PER_REQUEST);
-          QueryResult result = twitterInstance.search(query);
+          final Query query = new Query(keyword).count(MAX_TWEETS_PER_REQUEST);
+          final QueryResult result = twitterInstance.search(query);
           subscriber.onNext(result.getTweets());
           subscriber.onCompleted();
         } catch (TwitterException e) {
@@ -56,8 +56,8 @@ public final class TwitterApiProvider implements TwitterApi {
     return Observable.create(new Observable.OnSubscribe<List<Status>>() {
       @Override public void call(Subscriber<? super List<Status>> subscriber) {
         try {
-          Query query = new Query(keyword).maxId(maxTweetId).count(MAX_TWEETS_PER_REQUEST);
-          QueryResult result = twitterInstance.search(query);
+          final Query query = new Query(keyword).maxId(maxTweetId).count(MAX_TWEETS_PER_REQUEST);
+          final QueryResult result = twitterInstance.search(query);
           subscriber.onNext(result.getTweets());
           subscriber.onCompleted();
         } catch (TwitterException e) {
@@ -76,15 +76,15 @@ public final class TwitterApiProvider implements TwitterApi {
   }
 
   @Override
-  public boolean canLoadMoreTweets(LinearLayoutManager layoutManager, int tweetsPerRequest) {
-    int visibleItemsCount = layoutManager.getChildCount();
-    int totalItemsCount = layoutManager.getItemCount();
-    int pastVisibleItemsCount = layoutManager.findFirstVisibleItemPosition();
-    boolean lastItemShown = visibleItemsCount + pastVisibleItemsCount >= totalItemsCount;
+  public boolean canLoadMoreTweets(final LinearLayoutManager manager, final int tweetsPerRequest) {
+    final int visibleItemsCount = manager.getChildCount();
+    final int totalItemsCount = manager.getItemCount();
+    final int pastVisibleItemsCount = manager.findFirstVisibleItemPosition();
+    final boolean lastItemShown = visibleItemsCount + pastVisibleItemsCount >= totalItemsCount;
     return lastItemShown && totalItemsCount >= tweetsPerRequest;
   }
 
-  @Override public boolean canSearchTweets(String keyword) {
+  @Override public boolean canSearchTweets(final String keyword) {
     if (keyword.trim().isEmpty()) {
       return false;
     }

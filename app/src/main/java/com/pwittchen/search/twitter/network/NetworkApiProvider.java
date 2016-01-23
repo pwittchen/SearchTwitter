@@ -6,9 +6,9 @@ import android.net.NetworkInfo;
 
 public final class NetworkApiProvider implements NetworkApi {
   @Override public boolean isConnectedToInternet(Context context) {
-    String service = Context.CONNECTIVITY_SERVICE;
-    ConnectivityManager manager = (ConnectivityManager) context.getSystemService(service);
-    NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+    final String service = Context.CONNECTIVITY_SERVICE;
+    final ConnectivityManager manager = (ConnectivityManager) context.getSystemService(service);
+    final NetworkInfo networkInfo = manager.getActiveNetworkInfo();
 
     if (networkInfo == null) {
       return false;

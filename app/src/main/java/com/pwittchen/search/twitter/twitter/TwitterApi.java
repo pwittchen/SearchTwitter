@@ -14,7 +14,7 @@ public interface TwitterApi {
 
   int getMaxTweetsPerRequest();
 
-  boolean canLoadMoreTweets(LinearLayoutManager layoutManager, int tweetsPerRequest);
+  boolean canLoadMoreTweets(final LinearLayoutManager manager, final int tweetsPerRequest);
 
-  boolean canSearchTweets(String keyword);
+  boolean canSearchTweets(final String keyword);
 }

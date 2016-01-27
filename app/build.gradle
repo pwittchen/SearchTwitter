@@ -66,6 +66,7 @@ dependencies {
   // reactive libraries
   compile 'io.reactivex:rxjava:1.0.14'
   compile 'io.reactivex:rxandroid:1.0.1'
+  compile 'com.github.pwittchen:reactivenetwork:0.1.5'
 
   // dependency injection & view injection
   compile 'com.google.dagger:dagger:2.0'

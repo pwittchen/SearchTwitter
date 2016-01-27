@@ -16,6 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.github.pwittchen.reactivenetwork.library.ConnectivityStatus;
+import com.github.pwittchen.reactivenetwork.library.ReactiveNetwork;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.pwittchen.search.twitter.BaseApplication;
 import com.pwittchen.search.twitter.R;
@@ -58,7 +60,7 @@ public final class MainActivity extends AppCompatActivity {
     initRecyclerView();
     setSupportActionBar(toolbar);
     initSearchView();
-    initMessageContainer();
+    setErrorMessage();
   }
 
   @Override public boolean onCreateOptionsMenu(final Menu menu) {
@@ -66,6 +68,25 @@ public final class MainActivity extends AppCompatActivity {
     final MenuItem item = menu.findItem(R.id.action_search);
     searchView.setMenuItem(item);
     return true;
+  }
+
+  @Override protected void onResume() {
+    super.onResume();
+    setMessageOnConnectivityChange();
+  }
+
+  private void setMessageOnConnectivityChange() {
+    new ReactiveNetwork().enableInternetCheck()
+        .observeConnectivity(getApplicationContext())
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Action1<ConnectivityStatus>() {
+          @Override public void call(ConnectivityStatus status) {
+            if (messageContainerLayout.getVisibility() == View.VISIBLE) {
+              setErrorMessage();
+            }
+          }
+        });
   }
 
   private void initInjections() {
@@ -158,7 +179,7 @@ public final class MainActivity extends AppCompatActivity {
     });
   }
 
-  private void initMessageContainer() {
+  private void setErrorMessage() {
     if (networkApi.isConnectedToInternet(this)) {
       showErrorMessageContainer(getString(R.string.no_tweets), R.drawable.no_tweets);
     } else {

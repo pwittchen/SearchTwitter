@@ -124,6 +124,7 @@ Used libraries
 - In application
   - RxJava
   - RxAnadroid
+  - ReactiveNetwork
   - Dagger 2
   - ButterKnife
   - Joda Time

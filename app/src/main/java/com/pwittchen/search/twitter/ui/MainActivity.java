@@ -103,7 +103,7 @@ public final class MainActivity extends AppCompatActivity {
   }
 
   @SuppressWarnings("deprecation") private void setInfiniteScrollListener() {
-    recyclerViewTweets.setOnScrollListener(new RecyclerView.OnScrollListener() {
+    recyclerViewTweets.addOnScrollListener(new RecyclerView.OnScrollListener() {
       @Override
       public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
         super.onScrolled(recyclerView, dx, dy);

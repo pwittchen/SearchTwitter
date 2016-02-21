@@ -66,7 +66,7 @@ dependencies {
   // reactive libraries
   compile 'io.reactivex:rxjava:1.0.14'
   compile 'io.reactivex:rxandroid:1.0.1'
-  compile 'com.github.pwittchen:reactivenetwork:0.1.5'
+  compile 'com.github.pwittchen:reactivenetwork:0.2.0'
 
   // dependency injection & view injection
   compile 'com.google.dagger:dagger:2.0'
@@ -75,15 +75,16 @@ dependencies {
   provided 'javax.annotation:jsr250-api:1.0'
 
   // backward compatibility and design support
-  compile 'com.android.support:appcompat-v7:23.1.0'
-  compile 'com.android.support:recyclerview-v7:23.1.0'
-  compile 'com.android.support:design:23.1.0'
+  compile 'com.android.support:appcompat-v7:23.1.1'
+  compile 'com.android.support:recyclerview-v7:23.1.1'
+  compile 'com.android.support:design:23.1.1'
 
-  // others: twitter, search view, loading images, time operations
+  // others: twitter, search view, loading images, time operations, infinite scroll
   compile 'org.twitter4j:twitter4j-core:4.0.4'
   compile 'com.miguelcatalan:materialsearchview:1.2.0'
   compile 'com.squareup.picasso:picasso:2.5.2'
   compile 'joda-time:joda-time:2.8.2'
+  compile 'com.github.pwittchen:infinitescroll:0.0.1'
 
   // test dependencies
   androidTestCompile 'junit:junit:4.12'
@@ -95,5 +96,5 @@ dependencies {
   androidTestCompile 'org.mockito:mockito-core:1.10.19'
   androidTestCompile 'com.android.support.test:runner:0.4.1'
   androidTestCompile 'com.android.support.test:rules:0.4.1'
-  androidTestCompile 'com.android.support:support-annotations:23.1.0'
+  androidTestCompile 'com.android.support:support-annotations:23.1.1'
 }

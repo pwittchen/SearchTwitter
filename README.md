@@ -131,6 +131,7 @@ Used libraries
   - [Picasso](https://github.com/square/picasso)
   - [Twitter4J](https://github.com/yusuke/twitter4j)
   - [MaterialSearchView](https://github.com/MiguelCatalan/MaterialSearchView)
+  - [InfiniteScroll](https://github.com/pwittchen/InfiniteScroll)
 - In tests
   - [JUnit4](https://github.com/junit-team/junit)
   - [Google Truth](https://github.com/google/truth)

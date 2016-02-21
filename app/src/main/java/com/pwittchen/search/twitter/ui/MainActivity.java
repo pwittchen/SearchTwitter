@@ -16,8 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.github.pwittchen.infinitescroll.library.InfiniteScrollListener;
 import com.github.pwittchen.reactivenetwork.library.ConnectivityStatus;
-import com.github.pwittchen.reactivenetwork.library.ReactiveNetwork;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.pwittchen.search.twitter.BaseApplication;
 import com.pwittchen.search.twitter.R;
@@ -39,7 +39,7 @@ import twitter4j.TwitterException;
 public final class MainActivity extends AppCompatActivity {
   private static final String EMPTY_STRING = "";
   private String lastKeyword = EMPTY_STRING;
-  private LinearLayoutManager recyclerViewLayoutManager;
+  private LinearLayoutManager layoutManager;
   private Subscription delayedSearchSubscription;
   private Subscription searchTweetsSubscription;
   private Subscription loadMoreTweetsSubscription;
@@ -76,8 +76,7 @@ public final class MainActivity extends AppCompatActivity {
   }
 
   private void setMessageOnConnectivityChange() {
-    new ReactiveNetwork().enableInternetCheck()
-        .observeConnectivity(getApplicationContext())
+    networkApi.observeConnectivity(getApplicationContext())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Action1<ConnectivityStatus>() {
@@ -97,70 +96,59 @@ public final class MainActivity extends AppCompatActivity {
   private void initRecyclerView() {
     recyclerViewTweets.setHasFixedSize(true);
     recyclerViewTweets.setAdapter(new TweetsAdapter(this, new LinkedList<Status>()));
-    recyclerViewLayoutManager = new LinearLayoutManager(this);
-    recyclerViewTweets.setLayoutManager(recyclerViewLayoutManager);
-    setInfiniteScrollListener();
+    layoutManager = new LinearLayoutManager(this);
+    recyclerViewTweets.setLayoutManager(layoutManager);
+    recyclerViewTweets.addOnScrollListener(createInfiniteScrollListener());
   }
 
-  private void setInfiniteScrollListener() {
-    recyclerViewTweets.addOnScrollListener(new RecyclerView.OnScrollListener() {
-      @Override
-      public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
-        super.onScrolled(recyclerView, dx, dy);
-        final int maxTweetsPerRequest = twitterApi.getMaxTweetsPerRequest();
-        if (twitterApi.canLoadMoreTweets(recyclerViewLayoutManager, maxTweetsPerRequest)) {
-          loadMoreTweets();
+  @NonNull private InfiniteScrollListener createInfiniteScrollListener() {
+    return new InfiniteScrollListener(twitterApi.getMaxTweetsPerRequest(), layoutManager) {
+      @Override public void onScrolledToEnd(final int firstVisibleItemPosition) {
+        if (loadMoreTweetsSubscription != null && !loadMoreTweetsSubscription.isUnsubscribed()) {
+          return;
         }
+
+        final long lastTweetId = ((TweetsAdapter) recyclerViewTweets.getAdapter()).getLastTweetId();
+
+        loadMoreTweetsSubscription = twitterApi.searchTweets(lastKeyword, lastTweetId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<List<Status>>() {
+              @Override public void onStart() {
+                progressLoadingMoreTweets.setVisibility(View.VISIBLE);
+              }
+
+              @Override public void onCompleted() {
+                // we don't have to implement this
+              }
+
+              @Override public void onError(Throwable e) {
+                if (!networkApi.isConnectedToInternet(MainActivity.this)) {
+                  showSnackBar(getString(R.string.no_internet_connection));
+                } else {
+                  showSnackBar(getString(R.string.cannot_load_more_tweets));
+                }
+                progressLoadingMoreTweets.setVisibility(View.GONE);
+              }
+
+              @Override public void onNext(List<Status> newTweets) {
+                final TweetsAdapter newAdapter = createNewTweetsAdapter(newTweets);
+                refreshView(recyclerViewTweets, newAdapter, firstVisibleItemPosition);
+                progressLoadingMoreTweets.setVisibility(View.GONE);
+                unsubscribe();
+              }
+            });
       }
-    });
+    };
   }
 
-  private void loadMoreTweets() {
-    if (loadMoreTweetsSubscription != null && !loadMoreTweetsSubscription.isUnsubscribed()) {
-      return;
-    }
-
-    final long lastTweetId = ((TweetsAdapter) recyclerViewTweets.getAdapter()).getLastTweetId();
-
-    loadMoreTweetsSubscription = twitterApi.searchTweets(lastKeyword, lastTweetId)
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<List<Status>>() {
-          @Override public void onStart() {
-            progressLoadingMoreTweets.setVisibility(View.VISIBLE);
-          }
-
-          @Override public void onCompleted() {
-            // we don't have to implement this
-          }
-
-          @Override public void onError(Throwable e) {
-            if (!networkApi.isConnectedToInternet(MainActivity.this)) {
-              showSnackBar(getString(R.string.no_internet_connection));
-            } else {
-              showSnackBar(getString(R.string.cannot_load_more_tweets));
-            }
-            progressLoadingMoreTweets.setVisibility(View.GONE);
-          }
-
-          @Override public void onNext(List<Status> newTweets) {
-            handleLoadMoreTweets(newTweets, (TweetsAdapter) recyclerViewTweets.getAdapter());
-            progressLoadingMoreTweets.setVisibility(View.GONE);
-            unsubscribe();
-          }
-        });
-  }
-
-  private void handleLoadMoreTweets(final List<Status> newTweets, final TweetsAdapter adapter) {
+  @NonNull private TweetsAdapter createNewTweetsAdapter(List<Status> newTweets) {
+    final TweetsAdapter adapter = (TweetsAdapter) recyclerViewTweets.getAdapter();
     final List<Status> oldTweets = adapter.getTweets();
     final List<Status> tweets = new LinkedList<>();
     tweets.addAll(oldTweets);
     tweets.addAll(newTweets);
-    final TweetsAdapter newAdapter = new TweetsAdapter(MainActivity.this, tweets);
-    final int lastPosition = recyclerViewLayoutManager.findFirstVisibleItemPosition();
-    recyclerViewTweets.setAdapter(newAdapter);
-    recyclerViewTweets.invalidate();
-    recyclerViewTweets.scrollToPosition(lastPosition);
+    return new TweetsAdapter(MainActivity.this, tweets);
   }
 
   private void initSearchView() {

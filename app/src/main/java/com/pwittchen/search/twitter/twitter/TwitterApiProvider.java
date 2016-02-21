@@ -1,6 +1,5 @@
 package com.pwittchen.search.twitter.twitter;
 
-import android.support.v7.widget.LinearLayoutManager;
 import com.pwittchen.search.twitter.BuildConfig;
 import java.util.List;
 import rx.Observable;
@@ -73,15 +72,6 @@ public final class TwitterApiProvider implements TwitterApi {
 
   @Override public int getMaxTweetsPerRequest() {
     return MAX_TWEETS_PER_REQUEST;
-  }
-
-  @Override
-  public boolean canLoadMoreTweets(final LinearLayoutManager manager, final int tweetsPerRequest) {
-    final int visibleItemsCount = manager.getChildCount();
-    final int totalItemsCount = manager.getItemCount();
-    final int pastVisibleItemsCount = manager.findFirstVisibleItemPosition();
-    final boolean lastItemShown = visibleItemsCount + pastVisibleItemsCount >= totalItemsCount;
-    return lastItemShown && totalItemsCount >= tweetsPerRequest;
   }
 
   @Override public boolean canSearchTweets(final String keyword) {

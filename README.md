@@ -122,16 +122,16 @@ Code style used in the project is called `SquareAndroid` from Java Code Styles r
 Used libraries
 --------------
 - In application
-  - RxJava
-  - RxAnadroid
-  - ReactiveNetwork
-  - Dagger 2
-  - ButterKnife
-  - Joda Time
-  - Picasso
-  - Twitter4J
-  - MaterialSearchView
+  - [RxJava](https://github.com/ReactiveX/RxJava)
+  - [RxAnadroid](https://github.com/ReactiveX/RxAndroid)
+  - [ReactiveNetwork](https://github.com/pwittchen/ReactiveNetwork)
+  - [Dagger 2](https://github.com/google/dagger)
+  - [ButterKnife](https://github.com/JakeWharton/butterknife)
+  - [Joda Time](https://github.com/JodaOrg/joda-time)
+  - [Picasso](https://github.com/square/picasso)
+  - [Twitter4J](https://github.com/yusuke/twitter4j)
+  - [MaterialSearchView](https://github.com/MiguelCatalan/MaterialSearchView)
 - In tests
-  - JUnit4
-  - Google Truth
-  - Mockito
+  - [JUnit4](https://github.com/junit-team/junit)
+  - [Google Truth](https://github.com/google/truth)
+  - [Mockito](https://github.com/mockito/mockito)

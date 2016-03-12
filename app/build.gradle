@@ -88,7 +88,7 @@ dependencies {
 
   // test dependencies
   androidTestCompile 'junit:junit:4.12'
-  androidTestCompile('com.google.truth:truth:0.25') {
+  androidTestCompile('com.google.truth:truth:0.28') {
     exclude group: 'junit' // Android has JUnit built in
   }
   androidTestCompile 'com.google.dexmaker:dexmaker:1.2' // required by Mockito

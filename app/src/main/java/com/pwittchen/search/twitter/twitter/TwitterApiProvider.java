@@ -75,9 +75,6 @@ public final class TwitterApiProvider implements TwitterApi {
   }
 
   @Override public boolean canSearchTweets(final String keyword) {
-    if (keyword.trim().isEmpty()) {
-      return false;
-    }
-    return true;
+    return (!keyword.trim().isEmpty());
   }
 }

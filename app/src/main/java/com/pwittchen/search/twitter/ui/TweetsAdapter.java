@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.pwittchen.search.twitter.R;
 import com.squareup.picasso.Picasso;
+import java.util.Collections;
 import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -55,7 +56,7 @@ public final class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.View
   }
 
   public List<Status> getTweets() {
-    return tweets;
+    return Collections.unmodifiableList(tweets);
   }
 
   public class ViewHolder extends RecyclerView.ViewHolder {

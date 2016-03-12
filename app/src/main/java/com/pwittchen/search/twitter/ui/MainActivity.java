@@ -14,8 +14,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import com.github.pwittchen.infinitescroll.library.InfiniteScrollListener;
 import com.github.pwittchen.reactivenetwork.library.ConnectivityStatus;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
@@ -39,19 +40,31 @@ import twitter4j.TwitterException;
 public final class MainActivity extends AppCompatActivity {
   private static final String EMPTY_STRING = "";
   private String lastKeyword = EMPTY_STRING;
+
   private LinearLayoutManager layoutManager;
+
   private Subscription delayedSearchSubscription;
   private Subscription searchTweetsSubscription;
   private Subscription loadMoreTweetsSubscription;
+
   @Inject protected TwitterApi twitterApi;
   @Inject protected NetworkApi networkApi;
-  @InjectView(R.id.recycler_view_tweets) public RecyclerView recyclerViewTweets;
-  @InjectView(R.id.toolbar) public Toolbar toolbar;
-  @InjectView(R.id.search_view) public MaterialSearchView searchView;
-  @InjectView(R.id.message_container) public LinearLayout messageContainerLayout;
-  @InjectView(R.id.iv_message_container_image) public ImageView imageViewMessage;
-  @InjectView(R.id.tv_message_container_text) public TextView textViewMessage;
-  @InjectView(R.id.pb_loading_more_tweets) public ProgressBar progressLoadingMoreTweets;
+
+  @Bind(R.id.recycler_view_tweets) public RecyclerView recyclerViewTweets;
+  @Bind(R.id.toolbar) public Toolbar toolbar;
+  @Bind(R.id.search_view) public MaterialSearchView searchView;
+  @Bind(R.id.message_container) public LinearLayout messageContainerLayout;
+  @Bind(R.id.iv_message_container_image) public ImageView imageViewMessage;
+  @Bind(R.id.tv_message_container_text) public TextView textViewMessage;
+  @Bind(R.id.pb_loading_more_tweets) public ProgressBar progressLoadingMoreTweets;
+
+  @BindString(R.string.no_internet_connection) public String msgNoInternetConnection;
+  @BindString(R.string.cannot_load_more_tweets) public String msgCannotLoadMoreTweets;
+  @BindString(R.string.no_tweets) public String msgNoTweets;
+  @BindString(R.string.no_tweets_formatted) public String msgNoTweetsFormatted;
+  @BindString(R.string.searched_formatted) public String msgSearchedFormatted;
+  @BindString(R.string.api_rate_limit_exceeded) public String msgApiRateLimitExceeded;
+  @BindString(R.string.error_during_search) public String msgErrorDuringSearch;
 
   @Override protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -89,7 +102,7 @@ public final class MainActivity extends AppCompatActivity {
   }
 
   private void initInjections() {
-    ButterKnife.inject(this);
+    ButterKnife.bind(this);
     ((BaseApplication) getApplication()).getComponent().inject(this);
   }
 
@@ -124,9 +137,9 @@ public final class MainActivity extends AppCompatActivity {
 
               @Override public void onError(Throwable e) {
                 if (!networkApi.isConnectedToInternet(MainActivity.this)) {
-                  showSnackBar(getString(R.string.no_internet_connection));
+                  showSnackBar(msgNoInternetConnection);
                 } else {
-                  showSnackBar(getString(R.string.cannot_load_more_tweets));
+                  showSnackBar(msgCannotLoadMoreTweets);
                 }
                 progressLoadingMoreTweets.setVisibility(View.GONE);
               }
@@ -169,9 +182,9 @@ public final class MainActivity extends AppCompatActivity {
 
   private void setErrorMessage() {
     if (networkApi.isConnectedToInternet(this)) {
-      showErrorMessageContainer(getString(R.string.no_tweets), R.drawable.no_tweets);
+      showErrorMessageContainer(msgNoTweets, R.drawable.no_tweets);
     } else {
-      showErrorMessageContainer(getString(R.string.no_internet_connection), R.drawable.error);
+      showErrorMessageContainer(msgNoInternetConnection, R.drawable.error);
     }
   }
 
@@ -200,7 +213,7 @@ public final class MainActivity extends AppCompatActivity {
     lastKeyword = keyword;
 
     if (!networkApi.isConnectedToInternet(this)) {
-      showSnackBar(getString(R.string.no_internet_connection));
+      showSnackBar(msgNoInternetConnection);
       return;
     }
 
@@ -230,14 +243,14 @@ public final class MainActivity extends AppCompatActivity {
 
   @NonNull private String getErrorMessage(final TwitterException e) {
     if (e.getErrorCode() == twitterApi.getApiRateLimitExceededErrorCode()) {
-      return getString(R.string.api_rate_limit_exceeded);
+      return msgApiRateLimitExceeded;
     }
-    return getString(R.string.error_during_search);
+    return msgErrorDuringSearch;
   }
 
   private void handleSearchResults(final List<Status> tweets, final String keyword) {
     if (tweets.isEmpty()) {
-      final String message = String.format(getString(R.string.no_tweets_formatted), keyword);
+      final String message = String.format(msgNoTweetsFormatted, keyword);
       showSnackBar(message);
       showErrorMessageContainer(message, R.drawable.no_tweets);
       return;
@@ -248,7 +261,7 @@ public final class MainActivity extends AppCompatActivity {
     recyclerViewTweets.invalidate();
     recyclerViewTweets.setVisibility(View.VISIBLE);
     messageContainerLayout.setVisibility(View.GONE);
-    final String message = String.format(getString(R.string.searched_formatted), keyword);
+    final String message = String.format(msgSearchedFormatted, keyword);
     showSnackBar(message);
   }
 

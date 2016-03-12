@@ -38,9 +38,7 @@ import twitter4j.Status;
 import twitter4j.TwitterException;
 
 public final class MainActivity extends AppCompatActivity {
-  private static final String EMPTY_STRING = "";
-  private String lastKeyword = EMPTY_STRING;
-
+  private String lastKeyword = "";
   private LinearLayoutManager layoutManager;
 
   private Subscription delayedSearchSubscription;

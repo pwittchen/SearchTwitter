@@ -41,9 +41,9 @@ public final class MainActivity extends AppCompatActivity {
   private String lastKeyword = "";
   private LinearLayoutManager layoutManager;
 
-  private Subscription delayedSearchSubscription;
-  private Subscription searchTweetsSubscription;
-  private Subscription loadMoreTweetsSubscription;
+  private Subscription subDelayedSearch;
+  private Subscription subSearchTweets;
+  private Subscription subLoadMoreTweets;
 
   @Inject protected TwitterApi twitterApi;
   @Inject protected NetworkApi networkApi;
@@ -115,13 +115,13 @@ public final class MainActivity extends AppCompatActivity {
   @NonNull private InfiniteScrollListener createInfiniteScrollListener() {
     return new InfiniteScrollListener(twitterApi.getMaxTweetsPerRequest(), layoutManager) {
       @Override public void onScrolledToEnd(final int firstVisibleItemPosition) {
-        if (loadMoreTweetsSubscription != null && !loadMoreTweetsSubscription.isUnsubscribed()) {
+        if (subLoadMoreTweets != null && !subLoadMoreTweets.isUnsubscribed()) {
           return;
         }
 
         final long lastTweetId = ((TweetsAdapter) recyclerViewTweets.getAdapter()).getLastTweetId();
 
-        loadMoreTweetsSubscription = twitterApi.searchTweets(lastKeyword, lastTweetId)
+        subLoadMoreTweets = twitterApi.searchTweets(lastKeyword, lastTweetId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new Subscriber<List<Status>>() {
@@ -187,7 +187,7 @@ public final class MainActivity extends AppCompatActivity {
   }
 
   private void searchTweetsWithDelay(final String keyword) {
-    safelyUnsubscribe(delayedSearchSubscription);
+    safelyUnsubscribe(subDelayedSearch);
 
     if (!twitterApi.canSearchTweets(keyword)) {
       return;
@@ -195,7 +195,7 @@ public final class MainActivity extends AppCompatActivity {
 
     // we are creating this delay to let user provide keyword
     // and omit not necessary requests
-    delayedSearchSubscription = Observable.timer(1, TimeUnit.SECONDS)
+    subDelayedSearch = Observable.timer(1, TimeUnit.SECONDS)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Action1<Long>() {
@@ -206,8 +206,7 @@ public final class MainActivity extends AppCompatActivity {
   }
 
   private void searchTweets(final String keyword) {
-    safelyUnsubscribe(delayedSearchSubscription, loadMoreTweetsSubscription,
-        searchTweetsSubscription);
+    safelyUnsubscribe(subDelayedSearch, subLoadMoreTweets, subSearchTweets);
     lastKeyword = keyword;
 
     if (!networkApi.isConnectedToInternet(this)) {
@@ -219,7 +218,7 @@ public final class MainActivity extends AppCompatActivity {
       return;
     }
 
-    searchTweetsSubscription = twitterApi.searchTweets(keyword)
+    subSearchTweets = twitterApi.searchTweets(keyword)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Subscriber<List<Status>>() {
@@ -270,8 +269,7 @@ public final class MainActivity extends AppCompatActivity {
 
   @Override protected void onPause() {
     super.onPause();
-    safelyUnsubscribe(delayedSearchSubscription, searchTweetsSubscription,
-        loadMoreTweetsSubscription);
+    safelyUnsubscribe(subDelayedSearch, subSearchTweets, subLoadMoreTweets);
   }
 
   private void safelyUnsubscribe(final Subscription... subscriptions) {

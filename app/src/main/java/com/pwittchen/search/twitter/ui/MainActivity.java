@@ -130,7 +130,8 @@ public final class MainActivity extends AppCompatActivity {
               }
 
               @Override public void onCompleted() {
-                // we don't have to implement this
+                progressLoadingMoreTweets.setVisibility(View.GONE);
+                unsubscribe();
               }
 
               @Override public void onError(Throwable e) {
@@ -145,8 +146,6 @@ public final class MainActivity extends AppCompatActivity {
               @Override public void onNext(List<Status> newTweets) {
                 final TweetsAdapter newAdapter = createNewTweetsAdapter(newTweets);
                 refreshView(recyclerViewTweets, newAdapter, firstVisibleItemPosition);
-                progressLoadingMoreTweets.setVisibility(View.GONE);
-                unsubscribe();
               }
             });
       }

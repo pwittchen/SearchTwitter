@@ -8,7 +8,6 @@ import javax.inject.Singleton;
 
 @Module public final class TwitterModule {
   @Provides @Singleton public TwitterApi provideTwitterApi() {
-    final TwitterApi twitterApi = new TwitterApiProvider();
-    return twitterApi;
+    return new TwitterApiProvider();
   }
 }

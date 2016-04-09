@@ -8,7 +8,6 @@ import javax.inject.Singleton;
 
 @Module public final class NetworkModule {
   @Provides @Singleton public NetworkApi provideNetworkApi() {
-    final NetworkApi networkApi = new NetworkApiProvider();
-    return networkApi;
+    return new NetworkApiProvider();
   }
 }

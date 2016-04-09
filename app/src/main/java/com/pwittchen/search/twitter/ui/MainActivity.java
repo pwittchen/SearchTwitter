@@ -34,6 +34,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 import twitter4j.Status;
 import twitter4j.TwitterException;
 
@@ -92,6 +93,7 @@ public final class MainActivity extends AppCompatActivity {
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Action1<ConnectivityStatus>() {
           @Override public void call(ConnectivityStatus status) {
+            Timber.d("connectivity changed: %s", status.toString());
             if (messageContainerLayout.getVisibility() == View.VISIBLE) {
               setErrorMessage();
             }
@@ -127,20 +129,24 @@ public final class MainActivity extends AppCompatActivity {
             .subscribe(new Subscriber<List<Status>>() {
               @Override public void onStart() {
                 progressLoadingMoreTweets.setVisibility(View.VISIBLE);
+                Timber.d("loading more tweets");
               }
 
               @Override public void onCompleted() {
                 progressLoadingMoreTweets.setVisibility(View.GONE);
+                Timber.d("more tweets loaded");
                 unsubscribe();
               }
 
               @Override public void onError(Throwable e) {
                 if (!networkApi.isConnectedToInternet(MainActivity.this)) {
                   showSnackBar(msgNoInternetConnection);
+                  Timber.d("no internet connection");
                 } else {
                   showSnackBar(msgCannotLoadMoreTweets);
                 }
                 progressLoadingMoreTweets.setVisibility(View.GONE);
+                Timber.d("couldn't load more tweets");
               }
 
               @Override public void onNext(List<Status> newTweets) {
@@ -166,6 +172,7 @@ public final class MainActivity extends AppCompatActivity {
     searchView.setCursorDrawable(R.drawable.search_view_cursor);
     searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
       @Override public boolean onQueryTextSubmit(final String query) {
+        Timber.d("pressed search icon");
         searchTweets(query);
         return false;
       }
@@ -186,9 +193,11 @@ public final class MainActivity extends AppCompatActivity {
   }
 
   private void searchTweetsWithDelay(final String keyword) {
+    Timber.d("starting delayed search");
     safelyUnsubscribe(subDelayedSearch);
 
     if (!twitterApi.canSearchTweets(keyword)) {
+      Timber.d("cannot search tweets keyword %s is invalid", keyword);
       return;
     }
 
@@ -205,15 +214,18 @@ public final class MainActivity extends AppCompatActivity {
   }
 
   private void searchTweets(final String keyword) {
+    Timber.d("attempting to search tweets with keyword %s", keyword);
     safelyUnsubscribe(subDelayedSearch, subLoadMoreTweets, subSearchTweets);
     lastKeyword = keyword;
 
     if (!networkApi.isConnectedToInternet(this)) {
+      Timber.d("cannot search tweets - no internet connection");
       showSnackBar(msgNoInternetConnection);
       return;
     }
 
     if (!twitterApi.canSearchTweets(keyword)) {
+      Timber.d("cannot search tweets - invalid keyword: %s", keyword);
       return;
     }
 
@@ -221,6 +233,11 @@ public final class MainActivity extends AppCompatActivity {
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Subscriber<List<Status>>() {
+
+          @Override public void onStart() {
+            Timber.d("searching tweets for keyword: %s", keyword);
+          }
+
           @Override public void onCompleted() {
             // we don't have to implement this method
           }
@@ -229,9 +246,11 @@ public final class MainActivity extends AppCompatActivity {
             final String message = getErrorMessage((TwitterException) e);
             showSnackBar(message);
             showErrorMessageContainer(message, R.drawable.no_tweets);
+            Timber.d("error during search: %s", message);
           }
 
           @Override public void onNext(final List<Status> tweets) {
+            Timber.d("search finished");
             handleSearchResults(tweets, keyword);
           }
         });
@@ -245,13 +264,16 @@ public final class MainActivity extends AppCompatActivity {
   }
 
   private void handleSearchResults(final List<Status> tweets, final String keyword) {
+    Timber.d("handling search results");
     if (tweets.isEmpty()) {
+      Timber.d("no tweets");
       final String message = String.format(msgNoTweetsFormatted, keyword);
       showSnackBar(message);
       showErrorMessageContainer(message, R.drawable.no_tweets);
       return;
     }
 
+    Timber.d("passing search results to adapter");
     final TweetsAdapter adapter = new TweetsAdapter(MainActivity.this, tweets);
     recyclerViewTweets.setAdapter(adapter);
     recyclerViewTweets.invalidate();
@@ -275,6 +297,7 @@ public final class MainActivity extends AppCompatActivity {
     for (Subscription subscription : subscriptions) {
       if (subscription != null && !subscription.isUnsubscribed()) {
         subscription.unsubscribe();
+        Timber.d("subscription %s unsubscribed", subscription.toString());
       }
     }
   }

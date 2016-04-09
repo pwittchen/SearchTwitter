@@ -2,6 +2,10 @@ SearchTwitter [![Build Status](https://travis-ci.org/pwittchen/SearchTwitter.svg
 =============
 Android app, which allows to search tweets as user types and scroll them infinitely
 
+Utilizes [modern Android libraries](#used-libraries) for Dependency Injection, Reactive Programming, Networking, Images Loading, Logging, User Interface, etc.
+
+Code quality is assured by [Unit Tests](#tests), [Static Code Analysis](#static-code-analysis) and [Continuous Integration](https://travis-ci.org/pwittchen/SearchTwitter).
+
 Contents
 --------
 
